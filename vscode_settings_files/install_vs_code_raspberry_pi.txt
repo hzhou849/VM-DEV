@@ -1,0 +1,11 @@
+To install vscode in raspberry pi
+1)Open a terminal, run "sudo -s" and then this script (again, the script is open source):
+
+2) then type ". <( wget -O - https://code.headmelted.com/installers/apt.sh )" 
+
+3) after install you can hold the updates by disabling them using:
+#OPTIONAL to roll back a build:
+sudo apt-get install code-oss=1.29.0-1539702286
+
+#And we also need to disable the automatic updates on this tool
+sudo apt-mark hold code-oss
