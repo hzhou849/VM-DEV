@@ -1,20 +1,47 @@
 CXX = g++
-CXXFLAGS = -Wall -Werror -Wextra -pedantic -g -fsanitize=address 
+CXXFLAGS = -Wall -Werror -Wextra -pedantic -g 
 
 # Leaksanitizer tool to detect memory leak.
-# LDFLAGS =  -fsanitize=address # cannot be used with -static linking
+LDFLAGS =  -fsanitize=address # cannot be used with -static linking
 # Boost include
 #INCLUDE = -I /opt/boost/1.64/Linux/x86_64/release/include/boost/
 # LBLIBS =  -lpthread -pthread -lncurses
 
 # static linked
 LBLIBS = -lncurses -ltinfo -lgpm
-
+STATICLIBS = -lncurses -ltinfo -lgpm
 CVER = -std=c++11 
 #for libraries, ie libboost_program_options.so  you always leave off the leading
 # "lib" so it becomes -lboost_program_options no .so or .a
 #LPATH= -L /opt/boost/1.64/Linux/x86_64/release/lib -lboost_program_options
+# default: build
 
+#===================================================
+# Version 4 multiple boot optoins
+
+# $@ variable that holds the last variable passed 'ie prog 1 or $1 bash'
+# $< holds the file name (no extensions); use $(SRC) for <filename>.cpp
+SRCS = $(wildcard *.cpp)
+# SRCS = 5-attributes_colors.cpp
+
+EXEC = $(patsubst %.cpp,%,$(SRCS))
+EXEC2 = $(patsubst %.cpp,%,$(SRCS))
+
+.PHONY: static clean all prog1
+
+#default build option (dynamically linked)
+prog1: $(EXEC)
+	@echo "Prog1 - execution"
+	$(CXX) $(LDFLAGS) $(CVER) -o  $< $(SRCS) $(INCLUDE) $(LPATH) $(LBLIBS) 
+
+clean: 
+	rm -f $(EXEC) 
+	
+
+# Alternative build option
+static: $(EXEC2)
+	@echo static
+	$(CXX) $(CVER) -o static_build-$< $(SRCS) $(INCLUDE) $(LPATH) -static $(STATICLIBS) 
 
 #=======================================================
 # VERSION 3 build all .o-->execs
@@ -47,18 +74,3 @@ CVER = -std=c++11
 # 	rm -f $(ODIR)/*.o
 # 	@echo "Cleanup complete"
 #===============================================================
-
-#===================================================
-# SRCS = $(wildcard *.cpp)
-SRCS = 5-attributes_colors.cpp
-
-EXEC = $(patsubst %.cpp,%,$(SRCS))
-
-all: $(EXEC)
-
-%: %.cpp
-	$(CXX) $(LDFLAGS) $(CVER) -o $@ $< $(INCLUDE) $(LPATH) -static $(LBLIBS) 
-
-clean: 
-	# rm -f $(EXEC)
-	rm -r 6*

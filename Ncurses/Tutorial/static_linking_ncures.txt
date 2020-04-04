@@ -1,0 +1,11 @@
+/* How to statically link lncures library 
+ * 
+ * Warning: this will create a much bigger file
+ */
+
+
+g++ -o prog_main prog_main.cpp -static -L. -lmytool -lncurses -ltinfo -lgpm
+g++ -o prog_main prog_main.cpp -static  -lncurses -ltinfo -lgpm
+
+
+may need to sudo apt-get libgpm-dev
